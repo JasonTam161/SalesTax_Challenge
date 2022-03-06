@@ -1,0 +1,53 @@
+﻿@model IEnumerable<SalesTax.Models.ShoppingCart>
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>Cart</h1>
+
+@if (Model != null  && Model.Any())
+{
+	<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.ItemName)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Price)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+
+	@foreach (var item in Model) {
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.ItemName)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Price)
+				</td>
+				<td>
+					<a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+				</td>
+			</tr>
+	}
+		</tbody>
+	</table>
+	<div class="container">
+		<div class="col-md-auto">
+			<a asp-controller="Items" asp-action="Index" style="width:50%; float: left;"> Back</a>
+			<a asp-controller="Receipt" asp-action="Index" style="width:50%; float:right; text-align:right">Purchase</a>
+		</div>
+	</div>
+} else if(Model == null || !String.IsNullOrEmpty(Model.Select(x => x.ItemName).ToString())){
+	<div>
+		<span>Shopping cart is empty</span>
+		<br>
+		<a asp-controller="Items" asp-action="Index">Back</a>
+	</div>
+}
+

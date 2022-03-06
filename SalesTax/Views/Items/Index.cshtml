@@ -1,0 +1,47 @@
+﻿@model IEnumerable<SalesTax.Models.Items>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Shop</h1>
+<div>
+    <b>@TempData["ItemsAdded"]</b>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ItemName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ItemName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.ActionLink("Add to Cart", "Add", "ShoppingCart", new {item.ItemName, item.Price, item.Id, item.Imported, item.GSTExempt})
+                </td>
+            </tr>
+}
+    </tbody>
+</table>
+<br />
+<div class = "container">
+    <div class="row">
+            @TempData["ItemsInCart"]
+            <a asp-controller="ShoppingCart" asp-action="Index">Checkout</a>
+    </div>
+</div>
+
+
