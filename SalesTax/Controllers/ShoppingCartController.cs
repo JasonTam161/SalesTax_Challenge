@@ -41,7 +41,7 @@ namespace SalesTax.Controllers
             return RedirectToAction("Index", "Items");
         }
 
-        // GET: ShoppingCart/Delete/5
+        //Delete item
         public ActionResult Delete(int id)
         {
             //Delete from session then rebind it
@@ -50,21 +50,6 @@ namespace SalesTax.Controllers
             sessionCart.Remove(deletedItem);
             HttpContext.Session.Set(Constants.CART, sessionCart);
             return RedirectToAction("Index", "ShoppingCart", false);
-        }
-
-        // POST: ShoppingCart/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
 
     }
