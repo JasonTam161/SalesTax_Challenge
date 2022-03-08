@@ -20,6 +20,8 @@ namespace SalesTax.Controllers
 
         public ActionResult Add(Items items)
         {
+            //Create session if it doesn't exist
+            //Else add convert session to list, add item, then update the session
             if(HttpContext.Session.Get(Constants.CART) == null)
             {
                 List<Items> cartItems = new List<Items>();

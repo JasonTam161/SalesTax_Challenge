@@ -16,7 +16,5 @@ namespace SalesTax.Data
         }
 
         public DbSet<SalesTax.Models.Items> Items { get; set; }
-        public DbSet<ShoppingCart> ShoppingCartItems { get; set; }
-        public DbSet<SalesTax.Models.Receipt> Receipt { get; set; }
     }
 }

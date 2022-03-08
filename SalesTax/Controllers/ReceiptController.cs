@@ -27,7 +27,15 @@ namespace SalesTax.Controllers
         public ActionResult Index()
         {
             List<Receipt> shoppingCart = new List<Receipt>();
+            //If user has no items in cart and accesses receipt via URL
+            //Return to Items page and display message
+            if (HttpContext.Session.Get(Constants.CART) == null)
+            {
+                TempData["NoItemsForReceipt"] = "You have no items in your cart. Receipt cannot be generated without items.";
+                return RedirectToAction("Index", "Items");
+            }
             shoppingCart = HttpContext.Session.Get<List<Receipt>>(Constants.CART);
+
             //Clear session after loading, as user would've checked out
             HttpContext.Session.Clear();
             decimal totalTax = 0M;
@@ -44,6 +52,13 @@ namespace SalesTax.Controllers
             return View(shoppingCart.ToList());
         }
 
+        /// <summary>
+        /// Add tax to item
+        /// </summary>
+        /// <param name="price">Price of Item</param>
+        /// <param name="importedItem">If item is imported</param>
+        /// <param name="GSTExempt">If item is GST exempt</param>
+        /// <returns>new price of item</returns>
         private decimal AddTax(decimal price, bool importedItem, bool GSTExempt)
         {
             //Add Tax
@@ -74,6 +89,14 @@ namespace SalesTax.Controllers
             return price;
         }
 
+        /// <summary>
+        /// Calculate total tax
+        /// </summary>
+        /// <param name="totalTax">Total Tax</param>
+        /// <param name="price">Price of item</param>
+        /// <param name="importedItem">If item is imported</param>
+        /// <param name="GSTExempt">If item is GST Exempt</param>
+        /// <returns>Returns total tax rounded up to nearest 5 cent</returns>
         private decimal CalculateTotalTax (decimal totalTax, decimal price, bool importedItem, bool GSTExempt)
         {
             if (importedItem)
@@ -107,7 +130,7 @@ namespace SalesTax.Controllers
         /// <param name="importTax">Constant of Import Tax. Put 0 if not imported</param>
         /// <param name="gstTax">Constant of gst Tax. Put 0 if tax exempt</param>
         /// <param name="roundTo">Round to decimal position</param>
-        /// <returns></returns>
+        /// <returns>Return new price (price + tax) of item</returns>
         private decimal CalculateItemTax(decimal price, decimal importTax, decimal gstTax, decimal roundTo)
         {
             return Math.Round((price * (importTax + gstTax)) / 100 * roundTo, MidpointRounding.ToPositiveInfinity) / roundTo;
