@@ -51,11 +51,11 @@ namespace SalesTax.Controllers
             {
                 if (GSTExempt)
                 {
-                    price = price + (price * Constants.IMPORT)/100;
+                    price = price + CalculateItemTax(price, Constants.IMPORT, 0, Constants.ROUND_NUMBER);
                 }
                 else
                 {
-                    price = price + (price * (Constants.GST + Constants.IMPORT))/100;
+                    price = price + CalculateItemTax(price, Constants.IMPORT, Constants.GST, Constants.ROUND_NUMBER);
                 }
 
             }
@@ -68,12 +68,10 @@ namespace SalesTax.Controllers
                 }
                 else
                 {
-                    price = price + (price * Constants.GST)/100;
+                    price = price + CalculateItemTax(price, 0, Constants.GST, Constants.ROUND_NUMBER);
                 }
             }
-
-            //Return new price
-            return Math.Round(price*20, MidpointRounding.AwayFromZero)/20;
+            return price;
         }
 
         private decimal CalculateTotalTax (decimal totalTax, decimal price, bool importedItem, bool GSTExempt)
@@ -99,8 +97,20 @@ namespace SalesTax.Controllers
                 }
                 totalTax = totalTax + (price * Constants.GST) / 100;
             }
+            return Math.Round(totalTax*20, MidpointRounding.ToPositiveInfinity) / 20;
+        }
 
-            return Math.Round(totalTax*20, MidpointRounding.AwayFromZero) / 20;
+        /// <summary>
+        /// Calculate tax for item, rounded up to 0.05
+        /// </summary>
+        /// <param name="price">Price of item</param>
+        /// <param name="importTax">Constant of Import Tax. Put 0 if not imported</param>
+        /// <param name="gstTax">Constant of gst Tax. Put 0 if tax exempt</param>
+        /// <param name="roundTo">Round to decimal position</param>
+        /// <returns></returns>
+        private decimal CalculateItemTax(decimal price, decimal importTax, decimal gstTax, decimal roundTo)
+        {
+            return Math.Round((price * (importTax + gstTax)) / 100 * roundTo, MidpointRounding.ToPositiveInfinity) / roundTo;
         }
     }
 }
